@@ -2,7 +2,7 @@ package ru.DmN.cmd.style
 
 @Suppress("NOTHING_TO_INLINE")
 object FmtUtils {
-    val String.fmt: String get() {
+    val CharSequence.fmt: String get() {
         val out = StringBuilder()
         var i = 0
         while (i < this.length) {
