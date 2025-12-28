@@ -1,8 +1,8 @@
 package ru.DmN.cmd.style
 
 enum class FmtStyle(val text: String) {
-    RESET("${Char(27)}[00m"),
-    BOLD("${Char(27)}[01m"),
-    ITALIC("${Char(27)}[03m"),
-    UNDERLINE("${Char(27)}[04m"),
+    RESET("\u001B[00m"),
+    BOLD("\u001B[01m"),
+    ITALIC("\u001B[03m"),
+    UNDERLINE("\u001B[04m"),
 }

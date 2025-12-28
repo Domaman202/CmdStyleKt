@@ -8,9 +8,49 @@ import kotlin.test.assertEquals
 
 class FmtUtilsTest {
     @Test
-    @DisplayName("Проверка форматирования")
-    fun testValid() {
+    @DisplayName("Проверка форматирования через свойство")
+    fun validPropertyTest() {
         assertEquals(
+            """
+                §
+                [30mblack
+                [31mred
+                [32mgreen
+                [33myellow
+                [34mblue
+                [35mmagenta
+                [36mcyan
+                [37mwhite
+                [90mbright_black
+                [91mbright_red
+                [92mbright_green
+                [93mbright_yellow
+                [94mbright_blue
+                [95mbright_magenta
+                [96mbright_cyan
+                [97mbright_white
+                [40mblack
+                [41mred
+                [42mgreen
+                [43myellow
+                [44mblue
+                [45mmagenta
+                [46mcyan
+                [47mwhite
+                [100mbright_black
+                [101mbright_red
+                [102mbright_green
+                [103mbright_yellow
+                [104mbright_blue
+                [105mbright_magenta
+                [106mbright_cyan
+                [107mbright_white
+                [00mreset
+                [01mbold
+                [03mitalic
+                [04munderline
+                reset[00m
+            """.trimIndent(),
             """
                 §§
                 §f0black
@@ -50,9 +90,16 @@ class FmtUtilsTest {
                 §siitalic
                 §suunderline
                 reset
-            """.trimIndent().fmt,
+            """.trimIndent().fmt
+        )
+    }
+
+    @Test
+    @DisplayName("Проверка форматирования через метод без значений, но с цветом и стилями")
+    fun validNoValuesTest() {
+        assertEquals(
             """
-                §§
+                §
                 [30mblack
                 [31mred
                 [32mgreen
@@ -90,36 +137,146 @@ class FmtUtilsTest {
                 [03mitalic
                 [04munderline
                 reset[00m
-            """.trimIndent()
+            """.trimIndent(),
+            """
+                §§
+                §f0black
+                §f1red
+                §f2green
+                §f3yellow
+                §f4blue
+                §f5magenta
+                §f6cyan
+                §f7white
+                §f8bright_black
+                §f9bright_red
+                §fabright_green
+                §fbbright_yellow
+                §fcbright_blue
+                §fdbright_magenta
+                §febright_cyan
+                §ffbright_white
+                §b0black
+                §b1red
+                §b2green
+                §b3yellow
+                §b4blue
+                §b5magenta
+                §b6cyan
+                §b7white
+                §b8bright_black
+                §b9bright_red
+                §babright_green
+                §bbbright_yellow
+                §bcbright_blue
+                §bdbright_magenta
+                §bebright_cyan
+                §bfbright_white
+                §srreset
+                §sbbold
+                §siitalic
+                §suunderline
+                reset
+            """.trimIndent().fmt()
         )
     }
 
     @Test
-    @DisplayName("Ошибки")
-    fun testException() {
+    @DisplayName("Проверка форматирования через метод со значениями без цветов и стилей")
+    fun validValuesNoColorAndStyleTest() {
         assertEquals(
+            "i = 12\u001B[00m",
+            "i = §{i}".fmt("i" to 12)
+        )
+    }
+
+    @Test
+    @DisplayName("Проверка форматирования через метод со значениями, цветами и стилями")
+    fun validValuesAndColorAndStyleTest() {
+        assertEquals(
+            "\u001B[01m\u001B[34mi = \u001B[31m12\u001B[00m\u001B[34m\u001B[01m\u001B[00m\u001B[34m\u001B[01m!\u001B[00m",
+            "§sb§f4i = §{i}!".fmt("i" to "§f112§sr".fmt)
+        )
+        assertEquals(
+            "\u001B[01m\u001B[34mi\u001B[03m\u001B[33m = \u001B[00m\u001B[34m\u001B[01m\u001B[31m21\u001B[00m\u001B[34m\u001B[01m\u001B[33m\u001B[00m\u001B[34m\u001B[01m\u001B[33m\u001B[00m\u001B[34m\u001B[01m!\u001B[00m",
+            "§sb§f4i§{op}!".fmt("op" to "§si§f3 = §sr§{i}".fmt("i" to "§f121§sr".fmt))
+        )
+    }
+
+    @Test
+    @DisplayName("Ошибки форматирования через свойство")
+    fun exceptionPropertyTest() {
+        assertEquals(
+            "Unexpected color code 'x'",
             assertThrows<IllegalArgumentException> {
                 "§fx".fmt
-            }.message,
-            "Unexpected color code 'x'"
+            }.message
         )
         assertEquals(
+            "Unexpected color code 'x'",
             assertThrows<IllegalArgumentException> {
                 "§bx".fmt
+            }.message
+        )
+        assertEquals(
+            "Unexpected style code 'x'",
+            assertThrows<IllegalArgumentException> {
+                "§sx".fmt
+            }.message
+        )
+        assertEquals(
+            "Unexpected formatting code 'x'",
+            assertThrows<IllegalArgumentException> {
+                "§x".fmt
+            }.message
+        )
+        assertEquals(
+            "Formatting values not allowed",
+            assertThrows<IllegalArgumentException> {
+                "§{i}".fmt
+            }.message
+        )
+    }
+
+    @Test
+    @DisplayName("Ошибки форматирования через метод")
+    fun exceptionMethodTest() {
+        assertEquals(
+            assertThrows<IllegalArgumentException> {
+                "§fx".fmt()
             }.message,
             "Unexpected color code 'x'"
         )
         assertEquals(
             assertThrows<IllegalArgumentException> {
-                "§sx".fmt
+                "§bx".fmt()
+            }.message,
+            "Unexpected color code 'x'"
+        )
+        assertEquals(
+            assertThrows<IllegalArgumentException> {
+                "§sx".fmt()
             }.message,
             "Unexpected style code 'x'"
         )
         assertEquals(
             assertThrows<IllegalArgumentException> {
-                "§x".fmt
+                "§x".fmt()
             }.message,
             "Unexpected formatting code 'x'"
+        )
+
+        assertEquals(
+            assertThrows<IllegalArgumentException> {
+                "§{i".fmt()
+            }.message,
+            "Incompleted formatting value declaration 'i'"
+        )
+        assertEquals(
+            assertThrows<IllegalArgumentException> {
+                "§{i}".fmt()
+            }.message,
+            "Formatting value 'i' not founded"
         )
     }
 }

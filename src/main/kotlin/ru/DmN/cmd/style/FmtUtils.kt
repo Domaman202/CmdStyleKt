@@ -2,21 +2,83 @@ package ru.DmN.cmd.style
 
 @Suppress("NOTHING_TO_INLINE")
 object FmtUtils {
+    fun CharSequence.fmt(vararg args: Pair<String, Any?>): String {
+        var foregroundColor: FmtColor? = null
+        var backgroundColor: FmtColor? = null
+        var styles: MutableList<FmtStyle> = mutableListOf()
+        val out = StringBuilder()
+        var i = 0
+        global@while (i < this.length) {
+            out.append(
+                when (val char = this[i++]) {
+                    '§' -> {
+                        when (val char = this[i++]) {
+                            '§' -> '§'
+                            'f' -> {
+                                foregroundColor = colorOf(this[i++])
+                                foregroundColor.fg
+                            }
+                            'b' -> {
+                                backgroundColor = colorOf(this[i++])
+                                backgroundColor.bg
+                            }
+                            's' -> {
+                                val style = styleOf(this[i++])
+                                if (style == FmtStyle.RESET)
+                                    styles = mutableListOf()
+                                else styles += style
+                                style.text
+                            }
+                            '{' -> {
+                                val name = StringBuilder()
+                                while (i < this.length) {
+                                    val char = this[i++]
+                                    if (char == '}') {
+                                        val name = name.toString()
+                                        val value = args.find { it.first == name }
+                                            ?: throw IllegalArgumentException("Formatting value '${name}' not founded")
+                                        val formatting =
+                                            StringBuilder().apply {
+                                                append(FmtStyle.RESET.text)
+                                                foregroundColor?.let { append(it.fg) }
+                                                backgroundColor?.let { append(it.bg) }
+                                                styles.forEach { append(it.text) }
+                                            }.toString()
+                                        out.append(value.second.toString().replace(FmtStyle.RESET.text, formatting))
+                                        continue@global
+                                    }
+                                    name.append(char)
+                                }
+                                throw IllegalArgumentException("Incompleted formatting value declaration '${name}'")
+                            }
+                            else -> throw IllegalArgumentException("Unexpected formatting code '$char'")
+                        }
+                    }
+                    else -> char
+                }
+            )
+        }
+        return out.append(FmtStyle.RESET.text).toString()
+    }
+
     val CharSequence.fmt: String get() {
         val out = StringBuilder()
         var i = 0
         while (i < this.length) {
-            val char = this[i++]
             out.append(
-                if (char == '§') {
-                    when (val char = this[i++]) {
-                        '§' -> out.append(char)
-                        'f' -> colorOf(this[i++]).fg
-                        'b' -> colorOf(this[i++]).bg
-                        's' -> styleOf(this[i++]).text
-                        else -> throw IllegalArgumentException("Unexpected formatting code '$char'")
+                when (val char = this[i++]) {
+                    '§' -> {
+                        when (val char = this[i++]) {
+                            '§' -> '§'
+                            'f' -> colorOf(this[i++]).fg
+                            'b' -> colorOf(this[i++]).bg
+                            's' -> styleOf(this[i++]).text
+                            '{' -> throw IllegalArgumentException("Formatting values not allowed")
+                            else -> throw IllegalArgumentException("Unexpected formatting code '$char'")
+                        }
                     }
-                } else char
+                    else -> char
+                }
             )
         }
         return out.append(FmtStyle.RESET.text).toString()
@@ -42,7 +104,7 @@ object FmtUtils {
         else -> throw IllegalArgumentException("Unexpected color code '$char'")
     }
 
-    private inline fun styleOf(char: Char) = when (char) {
+    private inline fun styleOf(char: Char): FmtStyle = when (char) {
         'r' -> FmtStyle.RESET
         'b' -> FmtStyle.BOLD
         'i' -> FmtStyle.ITALIC
