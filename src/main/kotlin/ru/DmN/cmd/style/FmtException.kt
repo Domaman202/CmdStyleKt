@@ -11,7 +11,7 @@ class FmtException(val key: TranslationKey, val value: Any?) : Exception(), ITra
     override val message: String get() = Translator.translate(Language.ENGLISH, this)
 
     private object Translator : ThrowableTranslator<FmtException>() {
-        private val PROVIDER = ResourceTranslationProvider("ru/dmn/cmd/style/lang")
+        private val PROVIDER = ResourceTranslationProvider("ru/DmN/cmd/style/lang")
 
         override fun translate(language: Language, throwable: FmtException): String =
             PROVIDER.translate(language, throwable.key, "value" to throwable.value)
