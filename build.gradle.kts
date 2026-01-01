@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.domaman202:TranslateKt:1.4.0")
+    implementation("io.github.domaman202:TranslateKt:1.4.1")
     testImplementation(kotlin("test"))
 }
 
