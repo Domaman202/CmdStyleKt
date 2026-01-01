@@ -7,13 +7,14 @@ plugins {
 }
 
 group = "io.github.domaman202"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation("io.github.domaman202:TranslateKt:1.4.0")
     testImplementation(kotlin("test"))
 }
 

@@ -1,0 +1,8 @@
+{
+  "ru.DmN.cmd.style.FmtUtils.fvnf": "Formatting value '§sb§{value}§sr' not founded",
+  "ru.DmN.cmd.style.FmtUtils.fvna": "Formatting values not allowed",
+  "ru.DmN.cmd.style.FmtUtils.ifvd": "Incompleted formatting value declaration '§sb§{value}§sr'",
+  "ru.DmN.cmd.style.FmtUtils.ufc": "Unexpected formatting code '§sb§{value}§sr'",
+  "ru.DmN.cmd.style.FmtUtils.ucc": "Unexpected color code '§sb§{value}§sr'",
+  "ru.DmN.cmd.style.FmtUtils.usc": "Unexpected style code '§sb§{value}§sr'"
+}

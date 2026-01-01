@@ -3,6 +3,7 @@ package ru.DmN.cmd.style
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.assertThrows
 import ru.DmN.cmd.style.FmtUtils.fmt
+import ru.DmN.translate.Language
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -206,77 +207,120 @@ class FmtUtilsTest {
     @Test
     @DisplayName("Ошибки форматирования через свойство")
     fun exceptionPropertyTest() {
-        assertEquals(
-            "Unexpected color code 'x'",
-            assertThrows<IllegalArgumentException> {
-                "§fx".fmt
-            }.message
-        )
-        assertEquals(
-            "Unexpected color code 'x'",
-            assertThrows<IllegalArgumentException> {
-                "§bx".fmt
-            }.message
-        )
-        assertEquals(
-            "Unexpected style code 'x'",
-            assertThrows<IllegalArgumentException> {
-                "§sx".fmt
-            }.message
-        )
-        assertEquals(
-            "Unexpected formatting code 'x'",
-            assertThrows<IllegalArgumentException> {
-                "§x".fmt
-            }.message
-        )
-        assertEquals(
-            "Formatting values not allowed",
-            assertThrows<IllegalArgumentException> {
-                "§{i}".fmt
-            }.message
-        )
+        assertThrows<FmtException> { "§fx".fmt }.let {
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§bx".fmt }.let {
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§sx".fmt }.let {
+            assertEquals(
+                "Unexpected style code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected style code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§x".fmt }.let {
+            assertEquals(
+                "Unexpected formatting code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected formatting code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§{i}".fmt }.let {
+            assertEquals(
+                "Formatting values not allowed".fmt,
+                it.message
+            )
+            assertEquals(
+                "Formatting values not allowed".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
     }
 
     @Test
     @DisplayName("Ошибки форматирования через метод")
     fun exceptionMethodTest() {
-        assertEquals(
-            assertThrows<IllegalArgumentException> {
-                "§fx".fmt()
-            }.message,
-            "Unexpected color code 'x'"
-        )
-        assertEquals(
-            assertThrows<IllegalArgumentException> {
-                "§bx".fmt()
-            }.message,
-            "Unexpected color code 'x'"
-        )
-        assertEquals(
-            assertThrows<IllegalArgumentException> {
-                "§sx".fmt()
-            }.message,
-            "Unexpected style code 'x'"
-        )
-        assertEquals(
-            assertThrows<IllegalArgumentException> {
-                "§x".fmt()
-            }.message,
-            "Unexpected formatting code 'x'"
-        )
-
-        assertEquals(
-            assertThrows<IllegalArgumentException> {
-                "§{i".fmt()
-            }.message,
-            "Incompleted formatting value declaration 'i'"
-        )
-        assertEquals(
-            assertThrows<IllegalArgumentException> {
-                "§{i}".fmt()
-            }.message,
-            "Formatting value 'i' not founded"
-        )
+        assertThrows<FmtException> { "§fx".fmt() }.let {
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§bx".fmt() }.let {
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected color code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§sx".fmt() }.let {
+            assertEquals(
+                "Unexpected style code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected style code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§x".fmt() }.let {
+            assertEquals(
+                "Unexpected formatting code '§sbx§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Unexpected formatting code '§sbx§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§{i".fmt() }.let {
+            assertEquals(
+                "Incompleted formatting value declaration '§sbi§sr'".fmt,
+                it.message
+            )
+            assertEquals(
+                "Incompleted formatting value declaration '§sbi§sr'".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
+        assertThrows<FmtException> { "§{i}".fmt() }.let {
+            assertEquals(
+                "Formatting value '§sbi§sr' not founded".fmt,
+                it.message
+            )
+            assertEquals(
+                "Formatting value '§sbi§sr' not founded".fmt,
+                it.translate(Language.ENGLISH)
+            )
+        }
     }
 }

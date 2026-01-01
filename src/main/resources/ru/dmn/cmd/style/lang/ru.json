@@ -1,0 +1,8 @@
+{
+  "ru.DmN.cmd.style.FmtUtils.fvnf": "Значение форматирования '§sb§{value}§sr' не найдено",
+  "ru.DmN.cmd.style.FmtUtils.fvna": "Значения форматирования не допускаются",
+  "ru.DmN.cmd.style.FmtUtils.ifvd": "Незавершенное объявление значения форматирования '§sb§{value}§sr'",
+  "ru.DmN.cmd.style.FmtUtils.ufc": "Неожиданный код форматирования '§sb§{value}§sr'",
+  "ru.DmN.cmd.style.FmtUtils.ucc": "Неожиданный код цвета '§sb§{value}§sr'",
+  "ru.DmN.cmd.style.FmtUtils.usc": "Неожиданный код стиля '§sb§{value}§sr'"
+}

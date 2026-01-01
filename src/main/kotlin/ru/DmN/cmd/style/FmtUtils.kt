@@ -1,7 +1,10 @@
 package ru.DmN.cmd.style
 
+import ru.DmN.translate.TranslationKey
+
 @Suppress("NOTHING_TO_INLINE")
 object FmtUtils {
+    @Throws(FmtException::class)
     fun CharSequence.fmt(vararg args: Pair<String, Any?>): String {
         var foregroundColor: FmtColor? = null
         var backgroundColor: FmtColor? = null
@@ -36,7 +39,7 @@ object FmtUtils {
                                     if (char == '}') {
                                         val name = name.toString()
                                         val value = args.find { it.first == name }
-                                            ?: throw IllegalArgumentException("Formatting value '${name}' not founded")
+                                            ?: throw FmtException(TranslationKey.of<FmtUtils>("fvnf"), name)
                                         val formatting =
                                             StringBuilder().apply {
                                                 append(FmtStyle.RESET.text)
@@ -49,9 +52,9 @@ object FmtUtils {
                                     }
                                     name.append(char)
                                 }
-                                throw IllegalArgumentException("Incompleted formatting value declaration '${name}'")
+                                throw FmtException(TranslationKey.of<FmtUtils>("ifvd"), name)
                             }
-                            else -> throw IllegalArgumentException("Unexpected formatting code '$char'")
+                            else -> throw FmtException(TranslationKey.of<FmtUtils>("ufc"), char)
                         }
                     }
                     else -> char
@@ -61,7 +64,7 @@ object FmtUtils {
         return out.append(FmtStyle.RESET.text).toString()
     }
 
-    val CharSequence.fmt: String get() {
+    val CharSequence.fmt: String @Throws(FmtException::class) get() {
         val out = StringBuilder()
         var i = 0
         while (i < this.length) {
@@ -73,8 +76,8 @@ object FmtUtils {
                             'f' -> colorOf(this[i++]).fg
                             'b' -> colorOf(this[i++]).bg
                             's' -> styleOf(this[i++]).text
-                            '{' -> throw IllegalArgumentException("Formatting values not allowed")
-                            else -> throw IllegalArgumentException("Unexpected formatting code '$char'")
+                            '{' -> throw FmtException(TranslationKey.of<FmtUtils>("fvna"), null)
+                            else -> throw FmtException(TranslationKey.of<FmtUtils>("ufc"), char)
                         }
                     }
                     else -> char
@@ -101,7 +104,7 @@ object FmtUtils {
         'd' -> FmtColor.BRIGHT_MAGENTA
         'e' -> FmtColor.BRIGHT_CYAN
         'f' -> FmtColor.BRIGHT_WHITE
-        else -> throw IllegalArgumentException("Unexpected color code '$char'")
+        else -> throw FmtException(TranslationKey.of<FmtUtils>("ucc"), char)
     }
 
     private inline fun styleOf(char: Char): FmtStyle = when (char) {
@@ -109,6 +112,6 @@ object FmtUtils {
         'b' -> FmtStyle.BOLD
         'i' -> FmtStyle.ITALIC
         'u' -> FmtStyle.UNDERLINE
-        else -> throw IllegalArgumentException("Unexpected style code '$char'")
+        else -> throw FmtException(TranslationKey.of<FmtUtils>("usc"), char)
     }
 }
